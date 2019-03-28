@@ -68,24 +68,6 @@ var controller = Botkit.slackbot(config).configureSlackApp(
     }
 );
 
-// FIX for: https://github.com/howdyai/botkit/issues/108
-var bot = controller.spawn({
-    token: xoxb-2388024300-592952881463-yvgHZysF13uUWghYt07N6Jcg
-});
-bot.api.team.info({}, function(err, response) {
-    if (err) throw new Error(err.stack || JSON.stringify(err));
-    // FIX2 this is a workaround for https://github.com/howdyai/botkit/issues/590
-    response.team.bot = {
-        id: 'boti',
-        name: 'boti'
-    };
-    // END FIX2
-    controller.saveTeam(response.team, function() {
-        // ignore
-    })
-});
-// END FIX
-
 controller.setupWebserver(process.env.PORT, function (err, webserver) {
     controller.createWebhookEndpoints(controller.webserver);
 
