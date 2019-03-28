@@ -130,7 +130,7 @@ controller.on('slash_command', function (slashCommand, message) {
 
             break;
         default:
-            slashCommand.replyPublic(message, "I'm afraid I don't know how to " + message.command + " yet.");
+            slashCommand.replyPrivate(message, "Still setting up " + message.command + "...stay tuned...");
 
     }
 
