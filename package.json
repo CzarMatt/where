@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.corp.ebay.com/mmossman/Where.git"
+    "url": "git+https://github.com/CzarMatt/where.git"
   },
   "keywords": [
     "slack",
@@ -18,9 +18,9 @@
   "author": "Matthew Mossman",
   "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.corp.ebay.com/mmossman/Where/issues"
+    "url": "https://github.com/CzarMatt/where/issues"
   },
-  "homepage": "https://github.corp.ebay.com/mmossman/Where#readme",
+  "homepage": "https://github.com/CzarMatt/where#readme",
   "engines": {
     "node": "5.1.1"
   },
