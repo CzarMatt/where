@@ -48,6 +48,8 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT ||
     process.exit(1);
 }
 
+var botId = process.env.BOT_ID
+
 var config = {}
 if (process.env.MONGOLAB_URI) {
     var BotkitStorage = require('botkit-storage-mongo');
@@ -64,7 +66,7 @@ var controller = Botkit.slackbot(config).configureSlackApp(
     {
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        scopes: ['commands'],
+        scopes: ['commands', 'bot'],
     }
 );
 
@@ -80,6 +82,23 @@ controller.setupWebserver(process.env.PORT, function (err, webserver) {
     });
 });
 
+
+const bot = controller.spawn({
+    token: botId
+});
+
+bot.startRTM((err, bot, payload) => {
+    if (err) {
+        throw new Error('Could not connect to Slack:' + err);
+    }
+});
+
+controller.on('rtm_open', (bot, message) => {
+    console.info('** The RTM api just connected!');
+});
+controller.on('rtm_close', (bot, message) => {
+    console.info('** The RTM api just closed');
+});
 
 //
 // BEGIN EDITING HERE!
@@ -117,4 +136,3 @@ controller.on('slash_command', function (slashCommand, message) {
 
 })
 ;
-
