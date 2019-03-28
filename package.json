@@ -1,7 +1,7 @@
 {
-  "name": "awesomeslashcommand",
+  "name": "where",
   "version": "1.0.0",
-  "description": "The awesomest slash command evar.",
+  "description": "Find people.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -9,18 +9,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DEGoodmanWilson/easy-peasy-slash-command-app.git"
+    "url": "git+https://github.corp.ebay.com/mmossman/Where.git"
   },
   "keywords": [
     "slack",
     "slash command"
   ],
-  "author": "D.E. Goodman-Wilson",
-  "license": "MIT",
+  "author": "Matthew Mossman",
+  "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.com/DEGoodmanWilson/easy-peasy-slash-command-app/issues"
+    "url": "https://github.corp.ebay.com/mmossman/Where/issues"
   },
-  "homepage": "https://github.com/DEGoodmanWilson/easy-peasy-slash-command-app#readme",
+  "homepage": "https://github.corp.ebay.com/mmossman/Where#readme",
   "engines": {
     "node": "5.1.1"
   },
