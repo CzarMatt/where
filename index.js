@@ -85,23 +85,28 @@ const Http = new XMLHttpRequest();
 const url = "https://slack.com/api/channels.info?token="+(botId)+"&channel=C0EGJMMM5";
 
 Http.onreadystatechange = (e) => {
-    console.info("Received response: " + Http.responseText);
+    var r = JSON.parse(Http.responseText)).channel.topic.value;
+    console.info("Received response: " + r;
     try {
-        if (this.status == 200) {
-            var json = JSON.parse(this.responseText);
+        if (Http.status == 200) {
+            //var json = JSON.parse(Http.responseText);
             // channel -> topic -> value
-            var response = json.channel.topic.value;
+            //var response = json.channel.topic.value;
          controller.spawn({}, function(bot) {
-
-    bot.replyPrivate(response);
-
-  });
+             bot.replyPrivate(r);
+         });
             //bot.replyPrivate(response);
         } else {
-            bot.replyPrivate("Blarg! Something went wrong. Try again later.");
+            controller.spawn({}, function(bot) {
+                bot.replyPrivate("Blarg! Something went wrong. Try again later.");
+            });
+            //bot.replyPrivate("Blarg! Something went wrong. Try again later.");
         }
     } catch (err) {
-        bot.replyPrivate("Blarg! Something went wrong. Try again later.");
+            controller.spawn({}, function(bot) {
+                bot.replyPrivate("Blarg! Something went wrong. Try again later.");
+            });
+        //bot.replyPrivate("Blarg! Something went wrong. Try again later.");
     }
 }
 
