@@ -23,6 +23,7 @@ Finds Gail in three steps:
 /* Uses the slack button feature to offer a real time bot to multiple teams */
 var Botkit = require('botkit');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var requestify = require('requestify');
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT || !process.env.VERIFICATION_TOKEN) {
     console.log('Error: Specify CLIENT_ID, CLIENT_SECRET, VERIFICATION_TOKEN and PORT in environment');
@@ -82,7 +83,7 @@ controller.on('rtm_close', (bot, message) => {
 });
 
 const Http = new XMLHttpRequest();
-const url = "https://slack.com/api/channels.info?token="+(botId)+"&channel=C0EGJMMM5";
+const urlSlack = "https://slack.com/api/channels.info?token="+(botId)+"&channel=C0EGJMMM5";
 
 Http.onreadystatechange = (e) => {
     console.info("Received response: status: " + Http.status);
@@ -119,20 +120,12 @@ controller.on('slash_command', function(bot, message) {
       
             //Http.open("GET", url);
             //Http.send();
-      var settings = {
-  "async": true,
-  "crossDomain": true,
-  "url": "https://slack.com/api/channels.info?token=xoxb-2388024300-592952881463-9riYoW2Wpf1z9O9agJ8hkUkL&channel=C0EGJMMM5",
-  "method": "GET",
-  "headers": {
-    "cache-control": "no-cache",
-    "Postman-Token": "7c918321-cdd2-4793-94df-1bd0e01297f6"
-  }
-}
-
-$.ajax(settings).done(function (response) {
-  console.log(response);
-});
+requestify.get(urlSlack).then(function(response) {
+      var data = JSON.parse(response.body);
+      bot.replyPrivate(message, json.channel.topic.value);
+    }, function(err){
+      console.log(err);
+    });
             break;
         default:
             bot.replyPrivate(message, "Huh!?  This shouldn't happen." + message.command);
