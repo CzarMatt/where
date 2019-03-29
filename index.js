@@ -106,7 +106,7 @@ controller.on('slash_command', function(bot, message) {
             // make sure the token matches!
             if (message.token !== process.env.VERIFICATION_TOKEN) return; //just ignore it.
             
-            bot.replyPrivate(message, "Received slash command!" + message.command);
+            bot.replyPrivate(message, "Received slash command! url = " + url + " :: " + message.command);
       
             //Http.open("GET", url);
             //Http.send();
