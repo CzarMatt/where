@@ -85,14 +85,12 @@ const Http = new XMLHttpRequest();
 const url = "https://slack.com/api/channels.info?token="+(botId)+"&channel=C0EGJMMM5";
 
 Http.onreadystatechange = (e) => {
-    var json = JSON.parse(Http.responseText);
-    var r = json.channel.topic.value;
-    console.info("Received response: " + r);
+    console.info("Received response: " + Http.responseText);
     try {
         if (Http.status == 200) {
-            //var json = JSON.parse(Http.responseText);
-            // channel -> topic -> value
-            //var response = json.channel.topic.value;
+            var json = JSON.parse(Http.responseText);
+            var r = json.channel.topic.value;
+            console.info("Received response: " + json);
          controller.spawn({}, function(bot) {
              bot.replyPrivate(r);
          });
