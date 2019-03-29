@@ -86,7 +86,7 @@ const url = "https://slack.com/api/channels.info?token="+(botId)+"&channel=C0EGJ
 
 Http.onreadystatechange = (e) => {
     var r = JSON.parse(Http.responseText).channel.topic.value;
-    console.info("Received response: " + r;
+    console.info("Received response: " + r);
     try {
         if (Http.status == 200) {
             //var json = JSON.parse(Http.responseText);
