@@ -117,8 +117,22 @@ controller.on('slash_command', function(bot, message) {
             
             //bot.replyPrivate(message, "Received slash command! url = " + url + " :: " + message.command);
       
-            Http.open("GET", url);
-            Http.send();
+            //Http.open("GET", url);
+            //Http.send();
+      var settings = {
+  "async": true,
+  "crossDomain": true,
+  "url": "https://slack.com/api/channels.info?token=xoxb-2388024300-592952881463-9riYoW2Wpf1z9O9agJ8hkUkL&channel=C0EGJMMM5",
+  "method": "GET",
+  "headers": {
+    "cache-control": "no-cache",
+    "Postman-Token": "7c918321-cdd2-4793-94df-1bd0e01297f6"
+  }
+}
+
+$.ajax(settings).done(function (response) {
+  console.log(response);
+});
             break;
         default:
             bot.replyPrivate(message, "Huh!?  This shouldn't happen." + message.command);
