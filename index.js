@@ -117,12 +117,12 @@ controller.on('slash_command', function(bot, message) {
             if (message.token !== process.env.VERIFICATION_TOKEN) return; //just ignore it.
             
             //bot.replyPrivate(message, "Received slash command! url = " + url + " :: " + message.command);
-      
+            console.info("Received slash command, requesting channel info...");
             //Http.open("GET", url);
             //Http.send();
 requestify.get(urlSlack).then(function(response) {
       var data = JSON.parse(response.body);
-      bot.replyPrivate(message, json.channel.topic.value);
+      bot.replyPrivate(message, data.channel.topic.value);
     }, function(err){
       console.log(err);
     });
