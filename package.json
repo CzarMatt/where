@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/CzarMatt/where#readme",
   "engines": {
-    "node": "5.1.1"
+    "node": "10.15.3"
   },
   "dependencies": {
     "botkit": "0.0.5",
