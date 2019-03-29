@@ -91,7 +91,12 @@ Http.onreadystatechange = (e) => {
             var json = JSON.parse(this.responseText);
             // channel -> topic -> value
             var response = json.channel.topic.value;
-            bot.replyPrivate(response);
+         controller.spawn({}, function(bot) {
+
+    bot.replyPrivate(response);
+
+  });
+            //bot.replyPrivate(response);
         } else {
             bot.replyPrivate("Blarg! Something went wrong. Try again later.");
         }
