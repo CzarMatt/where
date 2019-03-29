@@ -22,7 +22,6 @@ Finds Gail in three steps:
 
 /* Uses the slack button feature to offer a real time bot to multiple teams */
 var Botkit = require('botkit');
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var requestify = require('requestify');
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT || !process.env.VERIFICATION_TOKEN) {
@@ -82,50 +81,23 @@ controller.on('rtm_close', (bot, message) => {
     console.info('** The whereisgail service just closed!');
 });
 
-const Http = new XMLHttpRequest();
-const urlSlack = "https://slack.com/api/channels.info?token="+(botId)+"&channel=C0EGJMMM5";
-
-Http.onreadystatechange = (e) => {
-    console.info("Received response: status: " + Http.status);
-    try {
-        if (Http.status == 200) {
-            var json = JSON.parse(Http.responseText);
-            var r = json.channel.topic.value;
-            console.info("Received response: " + json);
-         controller.spawn({}, function(bot) {
-             bot.replyPrivate(r);
-         });
-            //bot.replyPrivate(response);
-        } else {
-            controller.spawn({}, function(bot) {
-                bot.replyPrivate("Blarg! Something went wrong. Try again later.");
-            });
-            //bot.replyPrivate("Blarg! Something went wrong. Try again later.");
-        }
-    } catch (err) {
-            controller.spawn({}, function(bot) {
-                bot.replyPrivate("Blarg! Something went wrong. Try again later.");
-            });
-        //bot.replyPrivate("Blarg! Something went wrong. Try again later.");
-    }
-}
+const urlSlack = "https://slack.com/api/channels.info?token=" + (botId) + "&channel=C0EGJMMM5";
 
 controller.on('slash_command', function(bot, message) {
     switch (message.command) {
         case "/whereisgail":
             // make sure the token matches!
             if (message.token !== process.env.VERIFICATION_TOKEN) return; //just ignore it.
-            
-            //bot.replyPrivate(message, "Received slash command! url = " + url + " :: " + message.command);
+
             console.info("Received slash command, requesting channel info...");
-            //Http.open("GET", url);
-            //Http.send();
-requestify.get(urlSlack).then(function(response) {
-      var data = JSON.parse(response.body);
-      bot.replyPrivate(message, data.channel.topic.value);
-    }, function(err){
-      console.log(err);
-    });
+
+            requestify.get(urlSlack).then(function(response) {
+                var data = JSON.parse(response.body);
+                bot.replyPrivate(message, data.channel.topic.value);
+            }, function(err) {
+                console.log(err);
+                bot.replyPrivate(message, "Blarg, something went wrong. Try again later.  :sad_keanu:");
+            });
             break;
         default:
             bot.replyPrivate(message, "Huh!?  This shouldn't happen." + message.command);
