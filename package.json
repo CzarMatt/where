@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://git.heroku.com/whereisgail.git"
+    "url": "git+https://github.com/CzarMatt/where.git"
   },
   "keywords": [
     "slack",
