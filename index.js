@@ -82,7 +82,7 @@ controller.on('rtm_close', (bot, message) => {
 });
 
 const Http = new XMLHttpRequest();
-const url = "https://slack.com/api/channels.info?token="+botId"+&channel=C0EGJMMM5";
+const url = "https://slack.com/api/channels.info?token="+(botId)+"+&channel=C0EGJMMM5";
 
 Http.onreadystatechange = (e) => {
     console.info("Received response: " + Http.responseText);
