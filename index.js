@@ -1,4 +1,4 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Find Gail!
 
 This script receives a /whereisgail slash command from Slack and looks up
@@ -16,9 +16,9 @@ Finds Gail in three steps:
 
  Used localtunnel to setup local webserver testing:
  
-   clientId=<my client id> clientSecret=<my client secret> PORT=3000 node bot.js
+ clientId=<my client id> clientSecret=<my client secret> PORT=3000 node bot.js
    
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /* Uses the slack button feature to offer a real time bot to multiple teams */
 var Botkit = require('botkit');
@@ -28,10 +28,10 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT ||
     process.exit(1);
 }
 
-var botId = process.env.BOT_ID
-var channelId = "C0EGJMMM5"
+var botId = process.env.BOT_ID;
+var channelId = "C0EGJMMM5";
+var config = {};
 
-var config = {}
 if (process.env.MONGOLAB_URI) {
     var BotkitStorage = require('botkit-storage-mongo');
     config = {
@@ -85,9 +85,21 @@ const url = 'https://slack.com/api/channels.info?token="+botId"+&channel=C0EGJMM
 
 Http.onreadystatechange = (e) => {
     console.log(Http.responseText)
+    try {
+        if (this.readyState == 4 && this.status == 200) {
+            var json = JSON.parse(this.responseText);
+            // channel -> topic -> value
+            var response = json.channel.topic.value;
+            bot.replyPrivate(response);
+        } else {
+            bot.replyPrivate("Blarg! Something went wrong. Try again later.");
+        }
+    } catch (err) {
+        bot.replyPrivate("Blarg! Something went wrong. Try again later.");
+    }
 }
 
-controller.on('slash_command', function(slashCommand, message) {
+controller.on('slash_command', function(bot, message) {
     switch (message.command) {
         case "/whereisgail":
             // make sure the token matches!
@@ -97,6 +109,6 @@ controller.on('slash_command', function(slashCommand, message) {
             Http.send();
             break;
         default:
-            slashCommand.replyPrivate(message, "Huh!?  This shouldn't happen." + message.command);
+            bot.replyPrivate(message, "Huh!?  This shouldn't happen." + message.command);
     }
 });
