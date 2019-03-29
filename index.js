@@ -1,43 +1,23 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- ______    ______    ______   __  __    __    ______
- /\  == \  /\  __ \  /\__  _\ /\ \/ /   /\ \  /\__  _\
- \ \  __<  \ \ \/\ \ \/_/\ \/ \ \  _"-. \ \ \ \/_/\ \/
- \ \_____\ \ \_____\   \ \_\  \ \_\ \_\ \ \_\   \ \_\
- \/_____/  \/_____/    \/_/   \/_/\/_/  \/_/    \/_/
+Find Gail!
 
+This script receives a /whereisgail slash command from Slack and looks up
+Gail's current location via her channel #whereisgail.
 
- This is a sample Slack Button application that provides a custom
- Slash command.
+The channel's topic is read an output back to the user as a private message.
 
- This bot demonstrates many of the core features of Botkit:
+Finds Gail in three steps:
 
- *
  * Authenticate users with Slack using OAuth
  * Receive messages using the slash_command event
  * Reply to Slash command both publicly and privately
 
- # RUN THE BOT:
+ Created a Slack app via: https://api.slack.com/applications/new
 
- Create a Slack app. Make sure to configure at least one Slash command!
-
- -> https://api.slack.com/applications/new
-
- Run your bot from the command line:
-
- clientId=<my client id> clientSecret=<my client secret> PORT=3000 node bot.js
-
- Note: you can test your oauth authentication locally, but to use Slash commands
- in Slack, the app must be hosted at a publicly reachable IP or host.
-
-
- # EXTEND THE BOT:
-
- Botkit is has many features for building cool and useful bots!
-
- Read all about it here:
-
- -> http://howdy.ai/botkit
-
+ Used localtunnel to setup local webserver testing:
+ 
+   clientId=<my client id> clientSecret=<my client secret> PORT=3000 node bot.js
+   
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /* Uses the slack button feature to offer a real time bot to multiple teams */
@@ -49,12 +29,15 @@ if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT ||
 }
 
 var botId = process.env.BOT_ID
+var channelId = "C0EGJMMM5"
 
 var config = {}
 if (process.env.MONGOLAB_URI) {
     var BotkitStorage = require('botkit-storage-mongo');
     config = {
-        storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
+        storage: BotkitStorage({
+            mongoUri: process.env.MONGOLAB_URI
+        }),
     };
 } else {
     config = {
@@ -62,18 +45,16 @@ if (process.env.MONGOLAB_URI) {
     };
 }
 
-var controller = Botkit.slackbot(config).configureSlackApp(
-    {
-        clientId: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        scopes: ['commands', 'bot'],
-    }
-);
+var controller = Botkit.slackbot(config).configureSlackApp({
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    scopes: ['commands', 'bot'],
+});
 
-controller.setupWebserver(process.env.PORT, function (err, webserver) {
+controller.setupWebserver(process.env.PORT, function(err, webserver) {
     controller.createWebhookEndpoints(controller.webserver);
 
-    controller.createOauthEndpoints(controller.webserver, function (err, req, res) {
+    controller.createOauthEndpoints(controller.webserver, function(err, req, res) {
         if (err) {
             res.status(500).send('ERROR: ' + err);
         } else {
@@ -82,57 +63,40 @@ controller.setupWebserver(process.env.PORT, function (err, webserver) {
     });
 });
 
-
 const bot = controller.spawn({
     token: botId
 });
 
 bot.startRTM((err, bot, payload) => {
     if (err) {
-        throw new Error('Could not connect to Slack:' + err);
+        throw new Error('Blarg, could not connect to Slack:' + err);
     }
 });
 
 controller.on('rtm_open', (bot, message) => {
-    console.info('** The RTM api just connected!');
+    console.info('** The whereisgail service just connected!');
 });
 controller.on('rtm_close', (bot, message) => {
-    console.info('** The RTM api just closed');
+    console.info('** The whereisgail service just closed!');
 });
 
-//
-// BEGIN EDITING HERE!
-//
+const Http = new XMLHttpRequest();
+const url = 'https://slack.com/api/channels.info?token="+botId"+&channel=C0EGJMMM5';
 
-controller.on('slash_command', function (slashCommand, message) {
+Http.onreadystatechange = (e) => {
+    console.log(Http.responseText)
+}
 
+controller.on('slash_command', function(slashCommand, message) {
     switch (message.command) {
-        case "/echo": //handle the `/echo` slash command. We might have others assigned to this app too!
-            // The rules are simple: If there is no text following the command, treat it as though they had requested "help"
-            // Otherwise just echo back to them what they sent us.
-
-            // but first, let's make sure the token matches!
+        case "/whereisgail":
+            // make sure the token matches!
             if (message.token !== process.env.VERIFICATION_TOKEN) return; //just ignore it.
 
-            // if no text was supplied, treat it as a help command
-            if (message.text === "" || message.text === "help") {
-                slashCommand.replyPrivate(message,
-                    "I echo back what you tell me. " +
-                    "Try typing `/echo hello` to see.");
-                return;
-            }
-
-            // If we made it here, just echo what the user typed back at them
-            //TODO You do it!
-            slashCommand.replyPublic(message, "1", function() {
-                slashCommand.replyPublicDelayed(message, "2").then(slashCommand.replyPublicDelayed(message, "3"));
-            });
-
+            Http.open("GET", url);
+            Http.send();
             break;
         default:
-            slashCommand.replyPrivate(message, "Still setting up " + message.command + "...stay tuned...");
-
+            slashCommand.replyPrivate(message, "Huh!?  This shouldn't happen." + message.command);
     }
-
-})
-;
+});
