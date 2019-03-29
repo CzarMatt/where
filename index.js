@@ -105,9 +105,11 @@ controller.on('slash_command', function(bot, message) {
         case "/whereisgail":
             // make sure the token matches!
             if (message.token !== process.env.VERIFICATION_TOKEN) return; //just ignore it.
-
-            Http.open("GET", url);
-            Http.send();
+            
+            bot.replyPrivate(message, "Received slash command!" + message.command);
+      
+            //Http.open("GET", url);
+            //Http.send();
             break;
         default:
             bot.replyPrivate(message, "Huh!?  This shouldn't happen." + message.command);
